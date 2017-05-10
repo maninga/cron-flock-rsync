@@ -26,7 +26,7 @@ LOG=${0}.${1}.log
 LOCK=${0}.${1}.lock
 LAST=${0}.${1}.last
 ACT=${0}.${1}.list
-FLOCK_ERR=100
+FLOCK_ERR=0
 
 ##############################################################################
 # create temporary files
@@ -38,13 +38,13 @@ TMP2=$(mktemp -p /tmp "tmp_$1.XXXXXXXXXX")
 ##############################################################################
 # do sync
 TIMESTAMP_START=$(date +'%F %T')
-flock -x -n -E ${FLOCK_ERR} ${LOCK} rsync -a -v ${RSYNC_SRC} ${RSYNC_DST} 2>${TMP2} 1>${TMP1}
+flock -x -n ${LOCK} rsync -a -v ${RSYNC_SRC} ${RSYNC_DST} 2>${TMP2} 1>${TMP1}
 RES=${?}
 TIMESTAMP_END=$(date +'%F %T')
 
 ##############################################################################
 # manage flock errors
-if [ ${RES} -eq ${FLOCK_ERR} ]
+if [ "${TIMESTAMP_START}" = "${TIMESTAMP_END}" ]
 then
 	echo "${TIMESTAMP_END}: already running" > ${LAST}
 	cleanup
