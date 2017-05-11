@@ -69,7 +69,7 @@ then
 	cat ${TMP2} >> ${LOG}
 
 	# cron output and exit
-	fail ${MSG} ${RES}
+	fail "${MSG}" ${RES}
 fi
 
 ##############################################################################
